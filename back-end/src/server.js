@@ -1,27 +1,34 @@
 import expresss from "express";
 import bodyParser from "body-parser";
+import { MogoClient, MongoClient } from "mongodb";
 
 const app = expresss();
-
-const articlesInfo = {
-  "learn-react": {
-    upvotes: 0,
-    comments: [],
-  },
-  "learn-node": {
-    upvotes: 0,
-    comments: [],
-  },
-  "my-thoughts-on-resumes": {
-    upvotes: 0,
-    comments: [],
-  },
-};
 
 app.use(bodyParser.json());
 
 app.get("/api/articles/votes", (req, res) => {
   res.status(200).json(articlesInfo);
+});
+
+app.get("/api/articles/:name", async (req, res) => {
+  try {
+    const client = await MongoClient.connect("mongodb://localhost:27017");
+    const { name: articleName } = req.params;
+
+    const db = client.db("my-blog");
+
+    const articleInfo = await db
+      .collection("articles")
+      .findOne({ name: articleName });
+
+    client.close();
+
+    if (articleInfo === null) return res.sendStatus(404);
+    res.status(200).json(articleInfo);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 });
 
 app.post("/api/articles/:name/add-comment", (req, res) => {
