@@ -63,7 +63,7 @@ app.post("/api/articles/:name/add-comment", (req, res) => {
       { name: articleName },
       {
         $set: {
-          comments: articlesInfo.comments.concat({ username: text }),
+          comments: articlesInfo.comments.concat({ username, text }),
         },
       }
     );

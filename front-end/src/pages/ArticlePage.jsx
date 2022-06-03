@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import articleContent from "../data/article-content";
 import ArticlesList from "../components/ArticlesList";
 import NotFoundPage from "./NotFoundPage";
+import CommentsList from "../components/CommentsList";
 
 export const ArticlePage = () => {
   const [articleInfo, setArticleInfo] = useState({ upvotes: 0, comments: [] });
@@ -36,6 +37,7 @@ export const ArticlePage = () => {
       {currentArticle.content.map((paragraph, index) => (
         <p key={index}>{paragraph}</p>
       ))}
+      <CommentsList comments={articleInfo.comments} />
       <h3>Other articles</h3>
       <ArticlesList articles={otherArticles} />
     </>
