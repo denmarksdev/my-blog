@@ -8,14 +8,14 @@ app.use(bodyParser.json());
 app.post(
   "/api/articles/:name/upvote",
   async (req, res) => {
-    withDB(async (db) => {
+    withDB(async (db, res) => {
       const { name: articleName } = req.params;
 
       const articleInfo = await db
         .collection("articles")
         .findOne({ name: articleName });
 
-      if (articleInfo === null) return res.status(202);
+      if (articleInfo === null) return res.status(400);
 
       await db.collection("articles").updateOne(
         { name: articleName },
@@ -41,27 +41,40 @@ app.get("/api/articles/:name", async (req, res) => {
         .collection("articles")
         .findOne({ name: articleName });
 
-      if (articleInfo === null) return res.sendStatus(404);
+      if (articleInfo === null) return res.sendStatus(400);
       res.status(200).json(articleInfo);
     },
     () => res.sendStatus(500)
   );
 });
 
-app.post(
-  "/api/articles/:name/add-comment",
-  (req, res) => {
+app.post("/api/articles/:name/add-comment", (req, res) => {
+  withDB(async (db) => {
     const { username, text } = req.body;
     const articleName = req.params.name;
 
-    const article = articlesInfo[articleName];
+    const articlesInfo = await db
+      .collection("articles")
+      .findOne({ name: articleName });
 
-    article.comments.push({ username, text });
+    if (articlesInfo === null) return res.sendStatus(400);
 
-    res.status(200).json(article);
-  },
-  () => res.sendStatus(500)
-);
+    await db.collection("articles").updateOne(
+      { name: articleName },
+      {
+        $set: {
+          comments: articlesInfo.comments.concat({ username: text }),
+        },
+      }
+    );
+
+    const updatedArticleInfo = await db
+      .collection("articles")
+      .findOne({ name: articleName });
+
+    res.status(200).json(updatedArticleInfo);
+  });
+});
 
 app.listen(8000, () => {
   console.log("Listening on port 8000 ");

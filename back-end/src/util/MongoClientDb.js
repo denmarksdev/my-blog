@@ -11,6 +11,7 @@ export const withDB = async (operations, onError = () => {}) => {
     const db = client.db("my-blog");
 
     await operations(db);
+    
     client.close();
   } catch (error) {
     console.error(error);
