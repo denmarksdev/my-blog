@@ -1,8 +1,11 @@
 import expresss from "express";
 import bodyParser from "body-parser";
 import { withDB } from "./util/MongoClientDb";
+import path from "path";
 
 const app = expresss();
+
+app.use(expresss.static(path.join(__dirname, "/build")));
 app.use(bodyParser.json());
 
 app.post(
@@ -74,6 +77,10 @@ app.post("/api/articles/:name/add-comment", (req, res) => {
 
     res.status(200).json(updatedArticleInfo);
   });
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/build/index.html"));
 });
 
 app.listen(8000, () => {
