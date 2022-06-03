@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.post(
   "/api/articles/:name/upvote",
   async (req, res) => {
-    withDB(async (db, res) => {
+    withDB(async (db) => {
       const { name: articleName } = req.params;
 
       const articleInfo = await db

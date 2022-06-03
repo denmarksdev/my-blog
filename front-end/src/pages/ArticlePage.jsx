@@ -5,6 +5,7 @@ import articleContent from "../data/article-content";
 import ArticlesList from "../components/ArticlesList";
 import NotFoundPage from "./NotFoundPage";
 import CommentsList from "../components/CommentsList";
+import UpvotesSection from "../components/UpvotesSection";
 
 export const ArticlePage = () => {
   const [articleInfo, setArticleInfo] = useState({ upvotes: 0, comments: [] });
@@ -33,7 +34,11 @@ export const ArticlePage = () => {
   return (
     <>
       <h1>{currentArticle.title}</h1>
-      <p>This post has been upvoted {articleInfo.upvotes}</p>
+      <UpvotesSection
+        articleName={name}
+        upvotes={articleInfo.upvotes}
+        setArticleInfo={setArticleInfo}
+      />
       {currentArticle.content.map((paragraph, index) => (
         <p key={index}>{paragraph}</p>
       ))}
