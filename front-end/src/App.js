@@ -2,7 +2,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import HomePage from "./pages/HomePage";
-import ArticlePage from "./pages/ArticlesPage";
+import ArticlePage from "./pages/ArticlePage";
 import ArticlesListPage from "./pages/ArticlesListPage";
 import AboutPage from "./pages/AboutPage";
 import NavBar from "./NavBar";
